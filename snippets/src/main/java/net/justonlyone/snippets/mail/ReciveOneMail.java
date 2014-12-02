@@ -2,13 +2,9 @@ package net.justonlyone.snippets.mail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.NoSuchProviderException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -28,10 +24,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
-import net.justonlyone.snippets.http.HttpPostUtil;
-
 /**
- * 有一封邮件就需要建立一个ReciveMail对象
+ * 
+ * Recive Email
+ * 
+ * @author FromInterNet
+ *
  */
 public class ReciveOneMail {
 	private MimeMessage mimeMessage = null;
@@ -145,7 +143,7 @@ public class ReciveOneMail {
 		if (nameindex != -1) {
 			conname = true;
 		}
-		// System.out.println("CONTENTTYPE: " + contenttype);
+		System.out.println("CONTENTTYPE: " + contenttype);
 		if (part.isMimeType("text/plain") && !conname) {
 			bodytext.append((String) part.getContent());
 		} else if (part.isMimeType("text/html") && !conname) {
@@ -244,10 +242,7 @@ public class ReciveOneMail {
 				if ((disposition != null)
 						&& ((disposition.equals(Part.ATTACHMENT)) || (disposition.equals(Part.INLINE)))) {
 					fileName = mpart.getFileName();
-					if ((fileName == null)) {
-						continue;
-					}
-					if ((fileName.toLowerCase().indexOf("gb2312") != -1)) {
+					if (fileName.toLowerCase().indexOf("gb2312") != -1) {
 						fileName = MimeUtility.decodeText(fileName);
 					}
 					saveFile(fileName, mpart.getInputStream());
@@ -335,73 +330,38 @@ public class ReciveOneMail {
 	 * PraseMimeMessage类测试
 	 */
 	public static void main(String args[]) throws Exception {
-		File file = new File("/Users/V/Downloads/163邮箱.txt");
-
-		InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");// 考虑到编码格式
-		BufferedReader bufferedReader = new BufferedReader(read);
-		String lineTxt;
-		while ((lineTxt = bufferedReader.readLine()) != null) {
-			String[] as = lineTxt.split("----");
-			System.out.print(as[0] + "   " + as[1] + "  ");
-			String regUrl = getRegistUrl(as[0], as[1]);
-			// System.out.println(regUrl);
-			// String result = HttpUtils.simplePost(s, "");
-			String result = HttpPostUtil.simplePost(regUrl, null, 5000);
-			if (result.contains("激活成功")) {
-				System.out.println("激活成功");
-			} else {
-				System.out.println("激活失败");
-			}
-		}
-		read.close();
-
-		// String regUrl = getRegistUrl("caifu6544110@163.com", "bizianchengyi");
-		// System.out.println(regUrl);
-		// // String result = HttpUtils.simplePost(s, "");
-		// String result = HttpPostUtil.simplePost(regUrl, null, 5000);
-		// System.out.println(result);
-	}
-
-	private static String getRegistUrl(String userName, String password) throws NoSuchProviderException,
-			MessagingException, Exception {
 		Properties props = System.getProperties();
-		props.put("mail.smtp.host", "imap.163.com");
+		props.put("mail.smtp.host", "smtp.163.com");
 		props.put("mail.smtp.auth", "true");
 		Session session = Session.getDefaultInstance(props, null);
-		URLName urln = new URLName("pop3", "pop3.163.com", 110, null, userName, password);
+		URLName urln = new URLName("pop3", "pop3.163.com", 110, null, "xiangzhengyan", "pass");
 		Store store = session.getStore(urln);
 		store.connect();
 		Folder folder = store.getFolder("INBOX");
 		folder.open(Folder.READ_ONLY);
 		Message message[] = folder.getMessages();
-		// System.out.println("Messages's length: " + message.length);
+		System.out.println("Messages's length: " + message.length);
 		ReciveOneMail pmm = null;
-		for (Message element : message) {
-			pmm = new ReciveOneMail((MimeMessage) element);
-			String subject = pmm.getSubject();
-			if (!"易传媒移动互联网广告平台激活邮件".equals(subject)) {
-				continue;
-			}
-
+		for (int i = 0; i < message.length; i++) {
+			System.out.println("======================");
+			pmm = new ReciveOneMail((MimeMessage) message[i]);
+			System.out.println("Message " + i + " subject: " + pmm.getSubject());
+			System.out.println("Message " + i + " sentdate: " + pmm.getSentDate());
+			System.out.println("Message " + i + " replysign: " + pmm.getReplySign());
+			System.out.println("Message " + i + " hasRead: " + pmm.isNew());
+			System.out.println("Message " + i + "  containAttachment: " + pmm.isContainAttach(message[i]));
+			System.out.println("Message " + i + " form: " + pmm.getFrom());
+			System.out.println("Message " + i + " to: " + pmm.getMailAddress("to"));
+			System.out.println("Message " + i + " cc: " + pmm.getMailAddress("cc"));
+			System.out.println("Message " + i + " bcc: " + pmm.getMailAddress("bcc"));
+			pmm.setDateFormat("yy年MM月dd日 HH:mm");
+			System.out.println("Message " + i + " sentdate: " + pmm.getSentDate());
+			System.out.println("Message " + i + " Message-ID: " + pmm.getMessageId());
 			// 获得邮件内容===============
-			pmm.getMailContent(element);
-			String content = pmm.getBodyText();
-			// System.out.println("Message " + i + " bodycontent: \r\n" + content);
-			String resultString = content.replaceAll("<a[^>]+>([^<]+)</a>", ",$1,");
-			// System.out.println(resultString);
-			String[] strs = resultString.split(",");
-			if ((strs == null) || (strs.length < 1)) {
-				continue;
-			}
-			for (String s : strs) {
-
-				if (s.contains("http://mobile.adchina.com/AboutUs/RegisterSuccess?")) {
-					return s;
-				}
-
-			}
-
+			pmm.getMailContent(message[i]);
+			System.out.println("Message " + i + " bodycontent: \r\n" + pmm.getBodyText());
+			pmm.setAttachPath("c:\\");
+			pmm.saveAttachMent(message[i]);
 		}
-		return "";
 	}
 }
