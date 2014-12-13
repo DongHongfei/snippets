@@ -1,4 +1,4 @@
-package net.justonlyone.snippets;
+package net.justonlyone;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

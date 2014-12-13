@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.http;
+package net.justonlyone.http;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

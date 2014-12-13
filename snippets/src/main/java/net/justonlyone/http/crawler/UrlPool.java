@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.http.crawler;
+package net.justonlyone.http.crawler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,6 +47,9 @@ public class UrlPool {
 	 */
 	// 判断pool中是否包含url,不包含就入队
 	public static void inQueue(String url) {
+		if ((url != null) && !url.startsWith("http://marx.zafu.edu.cn")) {
+			return;
+		}
 		if ((url != null) && !url.trim().equals("") && !urlPool.contains(url)) {
 			urlQueue.inQueue(url);
 		}

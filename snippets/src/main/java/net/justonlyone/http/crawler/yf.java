@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.http.crawler;
+package net.justonlyone.http.crawler;
 
 public class yf {
 

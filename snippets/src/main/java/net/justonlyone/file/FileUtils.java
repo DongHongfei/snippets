@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.file;
+package net.justonlyone.file;
 
 import java.io.BufferedReader;
 import java.io.File;

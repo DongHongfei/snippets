@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.http.crawler;
+package net.justonlyone.http.crawler;
 
 import java.util.Set;
 
@@ -25,8 +25,8 @@ public class CrawlerAction {
 			if (visitUrl == null) {
 				continue;
 			}
-			DownloadFile downloadFile = new DownloadFile();
-			String filePath = downloadFile.downloadFile(visitUrl);
+			// DownloadFile downloadFile = new DownloadFile();
+			// String filePath = downloadFile.downloadFile(visitUrl);
 			UrlPool.addPool(visitUrl);
 			HtmlParser htmlParser = new HtmlParser();
 			Set<String> links = htmlParser.extraLinks(visitUrl);
@@ -34,7 +34,7 @@ public class CrawlerAction {
 			for (String link : links) {
 				UrlPool.inQueue(link);
 			}
-			System.out.println(visitUrl + "::" + filePath);
+			// System.out.println(visitUrl + "::" + filePath);
 		}
 	}
 }

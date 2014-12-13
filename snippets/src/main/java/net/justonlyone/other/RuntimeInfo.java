@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.other;
+package net.justonlyone.other;
 
 public class RuntimeInfo {
 

@@ -1,8 +1,9 @@
-package net.justonlyone.snippets.http.crawler;
+package net.justonlyone.http.crawler;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
@@ -55,6 +56,10 @@ public class HtmlParser {
 					} else {
 						// 形如<frame src="test.html">
 						String frame = node.getText();
+						if (StringUtils.contains(frame, "杨帆")) {
+							System.out.println("+++++" + path);
+						}
+
 						int start = frame.indexOf("src=");
 						frame = frame.substring(start);
 						int end = frame.indexOf(">");
@@ -67,7 +72,7 @@ public class HtmlParser {
 			}
 		} catch (ParserException e) {
 			System.err.println("extra error");
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return links;
 	}

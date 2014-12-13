@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.http.crawler;
+package net.justonlyone.http.crawler;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

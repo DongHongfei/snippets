@@ -1,4 +1,4 @@
-package net.justonlyone.snippets.mail;
+package net.justonlyone.mail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
